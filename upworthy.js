@@ -6,14 +6,6 @@
 // @version     1
 // @grant       none
 // ==/UserScript==
-// ==UserScript==
-// @name        Remove Upworthy links from Facebook
-// @namespace   fractalboy.github.io
-// @description Removes Upworthy links from Facebook so it doesn't annoy you
-// @include     https://www.facebook.com/*
-// @version     1
-// @grant       none
-// ==/UserScript==
 window.setInterval(function() {
 Array.prototype.slice.call(document.getElementsByClassName('_4-u2 mbm _5jmm _5pat _5v3q _5sq8 _5x16')).forEach(function(div) {
     var found = false;
