@@ -65,15 +65,19 @@
         }
     }
     function resetTimerHandler() {
-        init();
-        displayTime();
-        displayAction();
+        if(window.secs !== undefined) {
+            init();
+            displayTime();
+            displayAction();
+        }
     }
     function pauseTimerHandler() {
-        window.timer = window.clearInterval(window.timer);
-        window.state = 1;
-        displayTime();
-        displayAction();
+        if(window.state === 0) {
+            window.timer = window.clearInterval(window.timer);
+            window.state = 1;
+            displayTime();
+            displayAction();
+        }
     }
     function displayTime() {
         var minutes = Math.floor(window.secs / 60);
