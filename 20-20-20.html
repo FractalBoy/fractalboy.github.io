@@ -47,6 +47,9 @@
     }
     function resetTimerHandler() {
         init();
+        var minutes = Math.floor(window.secs / 60);
+        var secs = window.secs % 60;
+        document.getElementById('time').innerHTML = minutes + ":" + secs;
     }
     function pauseTimerHandler() {
         window.clearInterval(window.timer);
