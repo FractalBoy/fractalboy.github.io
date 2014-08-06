@@ -80,12 +80,12 @@
     function updateTimer() {
         if (window.secs === 0) {
             if (window.action === "work") {
-                window.secs = 1200;
+                window.secs = 20;
                 window.clearInterval(window.timer);
                 window.action = "stare";
 
             } else if (window.action === "stare") {
-                window.secs = 20;
+                window.secs = 1200;
                 window.clearInterval(window.timer);
                 window.action = "work";
             }
