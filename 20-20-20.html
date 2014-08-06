@@ -19,31 +19,33 @@
         if (window.state !== 0 && window.state !== 1) {
             init();
         }
+        if (window.state !== 0) {
+            window.timer = window.setInterval(function() {
+                if (window.secs === 0) {
+                    // TODO: Set off alarm
+                    if (window.action === "work") {
+                        window.secs = 1200;
+                        window.clearInterval(window.timer);
+                        window.action = "stare";
+                    } else if (window.action === "stare") {
+                        window.secs = 1200;
+                        window.clearInterval(window.timer);
+                        window.action = "work";
+                    }
+                } else {
+                    window.secs--;
+                    if (window.action === "work") {
+                        document.getElementById('action').innerHTML = "Keep working...";
+                    } else if (window.action === "stare") {
+                        document.getElementById('action').innerHTML = "Take a break and stare off to a point 20 feet away";
+                    }
+                }
+                var minutes = Math.floor(window.secs / 60);
+                var secs = window.secs % 60;
+                document.getElementById('time').innerHTML = minutes + ":" + secs;
+            }, 1000);
+        }
         window.state = 0;
-        window.timer = window.setInterval(function() {
-            if (window.secs === 0) {
-                // TODO: Set off alarm
-                if (window.action === "work") {
-                    window.secs = 1200;
-                    window.clearInterval(window.timer);
-                    window.action = "stare";
-                } else if (window.action === "stare") {
-                    window.secs = 1200;
-                    window.clearInterval(window.timer);
-                    window.action = "work";
-                }
-            } else {
-                window.secs--;
-                if (window.action === "work") {
-                    document.getElementById('action').innerHTML = "Keep working...";
-                } else if (window.action === "stare") {
-                    document.getElementById('action').innerHTML = "Take a break and stare off to a point 20 feet away";
-                }
-            }
-            var minutes = Math.floor(window.secs / 60);
-            var secs = window.secs % 60;
-            document.getElementById('time').innerHTML = minutes + ":" + secs;
-        }, 1000);
     }
     function resetTimerHandler() {
         init();
