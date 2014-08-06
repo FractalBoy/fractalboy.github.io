@@ -54,6 +54,7 @@
                         window.clearInterval(window.timer);
                         window.action = "work";
                     }
+                    window.state = 1;
                 } else {
                     window.secs--;
                     if (window.action === "work") {
@@ -61,11 +62,11 @@
                     } else if (window.action === "stare") {
                         document.getElementById('action').innerHTML = "Take a break and stare off to a point 20 feet away";
                     }
+                    window.state = 0;
                 }
                 displayTime();
             }, 1000);
         }
-        window.state = 0;
     }
     function resetTimerHandler() {
         init();
