@@ -52,7 +52,7 @@
         document.getElementById('time').innerHTML = minutes + ":" + secs;
     }
     function pauseTimerHandler() {
-        window.clearInterval(window.timer);
+        window.timer = window.clearInterval(window.timer);
         window.state = 1;
     }
 </script>
