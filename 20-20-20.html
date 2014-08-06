@@ -72,6 +72,8 @@
     function pauseTimerHandler() {
         window.timer = window.clearInterval(window.timer);
         window.state = 1;
+        displayTime();
+        displayAction();
     }
     function displayTime() {
         var minutes = Math.floor(window.secs / 60);
