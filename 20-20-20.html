@@ -1,13 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <style type="text/css">
+        html, body {
+            height: 100%;
+        }
+        body {
+            text-align: center;
+            margin-top: 200px;
+        }
+        #time, #action {
+            font-weight: bold;
+            font-family: Arial, sans-serif;
+            text-decoration: none;
+        }
+        #time {
+            font-size: 120pt;
+        }
+        #action {
+            font-size: 60pt;
+        }
+    </style>
 </head>
 <body>
-    <button onclick="startTimerHandler()">START TIMER</button>
-    <button onclick="resetTimerHandler()">RESET TIMER</button>
-    <button onclick="pauseTimerHandler()">PAUSE TIMER</button>
-    <div id="time"></div>
-    <div id="action"></div>
+    <div id="time">20:00</div>
+    <div id="action"> </div>
+    <div id="buttons">
+        <button onclick="startTimerHandler()">START</button>
+        <button onclick="resetTimerHandler()">RESET</button>
+        <button onclick="pauseTimerHandler()">PAUSE</button>
+    </div>
+    <audio id="Buzz.wav" src="Buzz.wav" preload="auto"></audio>
 </body>
 <script>
     function init() {
@@ -22,7 +45,6 @@
         if (window.state !== 0) {
             window.timer = window.setInterval(function() {
                 if (window.secs === 0) {
-                    // TODO: Set off alarm
                     if (window.action === "work") {
                         window.secs = 1200;
                         window.clearInterval(window.timer);
@@ -40,22 +62,28 @@
                         document.getElementById('action').innerHTML = "Take a break and stare off to a point 20 feet away";
                     }
                 }
-                var minutes = Math.floor(window.secs / 60);
-                var secs = window.secs % 60;
-                document.getElementById('time').innerHTML = minutes + ":" + secs;
+                displayTime();
             }, 1000);
         }
         window.state = 0;
     }
     function resetTimerHandler() {
         init();
-        var minutes = Math.floor(window.secs / 60);
-        var secs = window.secs % 60;
-        document.getElementById('time').innerHTML = minutes + ":" + secs;
+        displayTime();
     }
     function pauseTimerHandler() {
         window.timer = window.clearInterval(window.timer);
         window.state = 1;
+    }
+    function displayTime() {
+        var minutes = Math.floor(window.secs / 60);
+        var secs = window.secs % 60;
+        var s = secs+"";
+        if (s.length < 2) {
+            document.getElementById('time').innerHTML = minutes + ":" + "0" + secs;
+        } else {
+            document.getElementById('time').innerHTML = minutes + ":" + secs;
+        }
     }
 </script>
 </html>
