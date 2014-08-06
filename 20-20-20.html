@@ -42,26 +42,8 @@
             init();
         }
         if (window.state !== 0) {
-            window.timer = window.setInterval(function() {
-                if (window.secs === 0) {
-                    if (window.action === "work") {
-                        window.secs = 1200;
-                        window.clearInterval(window.timer);
-                        window.action = "stare";
-
-                    } else if (window.action === "stare") {
-                        window.secs = 1200;
-                        window.clearInterval(window.timer);
-                        window.action = "work";
-                    }
-                    window.state = 1;
-                } else {
-                    window.secs--;
-                    window.state = 0;
-                }
-                displayTime();
-                displayAction();
-            }, 1000);
+            updateTimer();
+            window.timer = window.setInterval(updateTimer, 1000);
         }
     }
     function resetTimerHandler() {
@@ -99,6 +81,26 @@
          if(window.state !== 0) {
              document.getElementById('action').innerHTML = document.getElementById('action').innerHTML + "<br>Press START."
          }
+    }
+    function updateTimer() {
+        if (window.secs === 0) {
+            if (window.action === "work") {
+                window.secs = 1200;
+                window.clearInterval(window.timer);
+                window.action = "stare";
+
+            } else if (window.action === "stare") {
+                window.secs = 1200;
+                window.clearInterval(window.timer);
+                window.action = "work";
+            }
+            window.state = 1;
+        } else {
+            window.secs--;
+            window.state = 0;
+        }
+        displayTime();
+        displayAction();
     }
 </script>
 </html>
