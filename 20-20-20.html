@@ -56,12 +56,8 @@
                     window.state = 1;
                 } else {
                     window.secs--;
-                    if (window.action === "work") {
-                        document.getElementById('action').innerHTML = "Keep working...";
-                    } else if (window.action === "stare") {
-                        document.getElementById('action').innerHTML = "Take a break and stare off to a point 20 feet away";
-                    }
                     window.state = 0;
+                    displayAction();
                 }
                 displayTime();
             }, 1000);
@@ -70,6 +66,7 @@
     function resetTimerHandler() {
         init();
         displayTime();
+        displayAction();
     }
     function pauseTimerHandler() {
         window.timer = window.clearInterval(window.timer);
@@ -84,6 +81,13 @@
         } else {
             document.getElementById('time').innerHTML = minutes + ":" + secs;
         }
+    }
+    function displayAction() {
+         if (window.action === "work") {
+             document.getElementById('action').innerHTML = "Keep working...";
+         } else if (window.action === "stare") {
+             document.getElementById('action').innerHTML = "Take a break and stare off to a point 20 feet away";
+         }
     }
 </script>
 </html>
