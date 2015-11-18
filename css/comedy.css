@@ -45,3 +45,12 @@ nav > a:hover {
 nav > a:active {
     color: cyan;
 }
+
+#info { 
+    display: block;
+    width: 700px;
+    height: 900px
+    text-align: justify;
+    margin-right: auto;
+    margin-left: auto;
+}
