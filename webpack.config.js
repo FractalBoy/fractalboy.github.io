@@ -1,5 +1,4 @@
 const path = require('path')
-const webpack = require('webpack')
 
 module.exports = {
     entry: './src/index.js',
@@ -9,13 +8,6 @@ module.exports = {
     },
     module: {
         rules: [
-            {
-                test: /\.css$/,
-                use: [
-                    'style-loader',
-                    'css-loader'
-                ]
-            },
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
@@ -27,15 +19,7 @@ module.exports = {
                 }
             }
         ]
-    },
-    plugins: [
-        new webpack.ProvidePlugin({
-            $: 'jquery',
-            jQuery: 'jquery',
-            'window.jQuery': 'jquery',
-            Popper: ['popper.js', 'default']
-        })
-    ]
+    }
 };
 
 
