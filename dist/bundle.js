@@ -155,6 +155,8 @@ var listFiles = function listFiles() {
     });
 };
 
+window.handleClientLoad = handleClientLoad;
+
 /***/ }),
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
