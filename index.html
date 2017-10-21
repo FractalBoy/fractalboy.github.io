@@ -1,20 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-        <script src="https://unpkg.com/requirejs@latest/require.js"></script>
-        <script src="https://unpkg.com/jquery@latest/dist/jquery.js"></script>
-        <script src="https://unpkg.com/jspdf@latest/dist/jspdf.min.js"></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
-        <script>
-            $(function() {
-                requirejs(['fountain/index'], function(fountain) {
-                    $("#convert").click(function() {
-                        alert("Clicked!");
-                    });
-                });
-            }); 
-        </script>
+        <script src="dist/bundle.js"></script>
 	</head>
 	<body>
         <div class="container">
