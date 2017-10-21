@@ -2,10 +2,14 @@
 <html>
 	<head>
         <script src="dist/bundle.js"></script>
+        <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
 	</head>
 	<body>
         <div class="container">
-            <button id="convert">Convert</button>
+            <button id="authorize-button">Authorize</button>
+            <button id="signout-button">Sign Out</button>
         </div>
+        <pre id="content"></pre>
 	</body>
 </html>
