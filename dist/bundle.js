@@ -86,10 +86,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var API_KEY = "AIzaSyBXCaeaIaRz9YC7n52VYqCFNAmB4jUmyaI";
 var PICKER_API_KEY = "AIzaSyCAO-spugKEwk9MGAX253RhGUHB6H72u5g";
+var APP_ID = "269066866991";
 var CLIENT_ID = "269066866991-qska5al6semmmli31jdm6k35liblc91o.apps.googleusercontent.com";
 
 var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
-var SCOPES = 'https://www.googleapis.com/auth/drive.metadata.readonly';
+var SCOPES = "https://www.googleapis.com/auth/drive";
 
 var authorizeButton = document.getElementById("authorize-button");
 var signoutButton = document.getElementById("signout-button");
@@ -121,7 +122,7 @@ var onPickerApiLoad = function onPickerApiLoad() {
 
     var view = new google.picker.View(google.picker.ViewId.DOCS);
     view.setMimeTypes("application/vnd.google-apps.document");
-    var picker = new google.picker.PickerBuilder().addView(view).addView(new google.picker.DocsUploadView()).setDeveloperKey(PICKER_API_KEY).setCallback(pickerCallback).build();
+    var picker = new google.picker.PickerBuilder().addView(view).addView(new google.picker.DocsUploadView()).setDeveloperKey(PICKER_API_KEY).setAppId(APP_ID).setCallback(pickerCallback).build();
     picker.setVisible(true);
 };
 
