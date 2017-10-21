@@ -84,8 +84,10 @@ var _fountain2 = _interopRequireDefault(_fountain);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-(0, _jquery2.default)("#convert").click(function () {
-    alert("Clicked!");
+(0, _jquery2.default)(function () {
+    (0, _jquery2.default)("#convert").click(function () {
+        alert("Clicked!");
+    });
 });
 
 /***/ }),
