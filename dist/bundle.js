@@ -92,6 +92,7 @@ var SCOPES = 'https://www.googleapis.com/auth/drive.metadata.readonly';
 
 var authorizeButton = document.getElementById("authorize-button");
 var signoutButton = document.getElementById("signout-button");
+var pickerApiLoaded = false;
 
 var handleClientLoad = function handleClientLoad() {
     gapi.load('client:auth2', initClient);
@@ -109,7 +110,25 @@ var initClient = function initClient() {
         updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
         authorizeButton.onclick = handleAuthClick;
         signoutButton.onclick = handleSignoutClick;
+
+        gapi.load('picker', onPickerApiLoad);
     });
+};
+
+var onPickerApiLoad = function onPickerApiLoad() {
+    pickerApiLoaded = true;
+
+    var view = new google.picker.View(google.picker.ViewId.DOCS);
+    view.setMimeTypes("application/vnd.google-apps.document");
+    var picker = new google.picker.PickerBuilder().addView(view).addView(new google.picker.DocsUploadView()).setDeveloperKey(API_KEY).setCallback(pickerCallback).build();
+    picker.setVisible(true);
+};
+
+var pickerCallback = function pickerCallback(data) {
+    if (data.action === google.picker.Action.PICKED) {
+        var fileId = data.docs[0].id;
+        alert("The user selected: " + fileId);
+    }
 };
 
 var updateSigninStatus = function updateSigninStatus(isSignedIn) {
