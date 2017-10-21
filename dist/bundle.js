@@ -95,35 +95,40 @@ var SCOPES = "https://www.googleapis.com/auth/drive";
 var authorizeButton = document.getElementById("authorize-button");
 var signoutButton = document.getElementById("signout-button");
 var pickerApiLoaded = false;
+var oauthToken = void 0;
 
-var handleClientLoad = function handleClientLoad() {
-    gapi.load('client:auth2', initClient);
+var loadPicker = function loadPicker() {
+    gapi.load('auth', { callback: onAuthApiLoad });
+    gapi.load('picker', { callback: onPickerApiLoad });
 };
 
-var initClient = function initClient() {
-    gapi.client.init({
-        apiKey: API_KEY,
-        clientId: CLIENT_ID,
-        discoveryDocs: DISCOVERY_DOCS,
-        scope: SCOPES
-    }).then(function () {
-        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
-
-        updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-        authorizeButton.onclick = handleAuthClick;
-        signoutButton.onclick = handleSignoutClick;
-
-        gapi.load('picker', onPickerApiLoad);
-    });
+var onAuthApiLoad = function onAuthApiLoad() {
+    window.gapi.auth.authorize({
+        client_id: CLIENT_ID,
+        scope: SCOPES,
+        immediate: false
+    }, handleAuthResult);
 };
 
 var onPickerApiLoad = function onPickerApiLoad() {
     pickerApiLoaded = true;
+    createPicker();
+};
 
-    var view = new google.picker.View(google.picker.ViewId.DOCS);
-    view.setMimeTypes("application/vnd.google-apps.document");
-    var picker = new google.picker.PickerBuilder().addView(view).addView(new google.picker.DocsUploadView()).setDeveloperKey(PICKER_API_KEY).setAppId(APP_ID).setCallback(pickerCallback).build();
-    picker.setVisible(true);
+var handleAuthResult = function handleAuthResult(authResult) {
+    if (authResult && !authResult.error) {
+        oauthToken = authResult.access_token;
+        createPicker();
+    }
+};
+
+var createPicker = function createPicker() {
+    if (pickerApiLoaded && oauthToken) {
+        var view = new google.picker.View(google.picker.ViewId.DOCS);
+        view.setMimeTypes("application/vnd.google-apps.document");
+        var picker = new google.picker.PickerBuilder().addView(view).addView(new google.picker.DocsUploadView()).setDeveloperKey(PICKER_API_KEY).setAppId(APP_ID).setOAuthToken(oauthToken).setCallback(pickerCallback).build();
+        picker.setVisible(true);
+    }
 };
 
 var pickerCallback = function pickerCallback(data) {
@@ -144,39 +149,7 @@ var updateSigninStatus = function updateSigninStatus(isSignedIn) {
     }
 };
 
-var handleAuthClick = function handleAuthClick(event) {
-    gapi.auth2.getAuthInstance().signIn();
-};
-
-var handleSignoutClick = function handleSignoutClick(event) {
-    gapi.auth2.getAuthInstance().signOut();
-};
-
-var appendPre = function appendPre(message) {
-    var pre = document.getElementById('content');
-    var textContent = document.createTextNode(message + '\n');
-    pre.appendChild(textContent);
-};
-
-var listFiles = function listFiles() {
-    gapi.client.drive.files.list({
-        'pageSize': 10,
-        'fields': "nextPageToken, files(id, name)"
-    }).then(function (response) {
-        appendPre('Files:');
-        var files = response.result.files;
-        if (files && files.length > 0) {
-            for (var i = 0; i < files.length; i++) {
-                var file = files[i];
-                appendPre(file.name + ' (' + file.id + ')');
-            }
-        } else {
-            appendPre('No files found.');
-        }
-    });
-};
-
-window.handleClientLoad = handleClientLoad;
+window.loadPicker = loadPicker;
 
 /***/ }),
 /* 1 */
