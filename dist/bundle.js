@@ -10801,11 +10801,14 @@ var downloadPdf = function downloadPdf() {
     });
 
     _jquery2.default.when.apply(_jquery2.default, promises).done(function () {
-        for (var _len = arguments.length, results = Array(_len), _key = 0; _key < _len; _key++) {
-            results[_key] = arguments[_key];
+        for (var i = 0; i < arguments.length; i++) {
+            var image = canvas.toDataURL();
+            pdf.addImage(image);
+            if (i !== arguments.length - 1) {
+                pdf.addPage();
+            }
         }
-
-        console.log(results);
+        pdf.output("dataurlnewwindow");
     });
 };
 
