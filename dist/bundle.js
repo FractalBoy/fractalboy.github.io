@@ -10786,20 +10786,9 @@ var downloadPdf = function downloadPdf() {
         format: 'letter'
     });
 
-    var pages = [];
-
-    (0, _jquery2.default)("#script").children(".page").each(function (i, page) {
-        pages.push(page);
+    pdf.addHTML((0, _jquery2.default)("#script"), 0, 0, null, function () {
+        pdf.save("test.pdf");
     });
-
-    for (var i = 0; i < pages.length; i++) {
-        pdf.addHTML(pages[i], 0, 0);
-        if (i !== pages.length - 1) {
-            pdf.addPage();
-        }
-    }
-
-    pdf.save("test.pdf");
 };
 
 var updateSigninStatus = function updateSigninStatus(isSignedIn) {
