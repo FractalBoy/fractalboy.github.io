@@ -138,7 +138,7 @@ var pickerCallback = function pickerCallback(data) {
             settings: {
                 url: 'https://www.googleapis.com/drive/v2/files/' + fileId,
                 headers: {
-                    Authorization: 'Bearer {oauthToken}'
+                    Authorization: 'Bearer ' + oauthToken
                 },
                 success: function success(data) {
                     alert(data);
