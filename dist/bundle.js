@@ -134,7 +134,17 @@ var createPicker = function createPicker() {
 var pickerCallback = function pickerCallback(data) {
     if (data.action === google.picker.Action.PICKED) {
         var fileId = data.docs[0].id;
-        alert("The user selected: " + fileId);
+        _jquery2.default.get({
+            settings: {
+                url: 'https://www.googleapis.com/drive/v2/files/' + fileId,
+                headers: {
+                    Authorization: 'Bearer {oauthToken}'
+                },
+                success: function success(data) {
+                    alert(data);
+                }
+            }
+        });
     }
 };
 
