@@ -10725,6 +10725,7 @@ var oauthToken = void 0;
 
 (0, _jquery2.default)(function () {
     (0, _jquery2.default)("#convert").click(loadPicker);
+    (0, _jquery2.default)("#download").click(downloadPdf);
 });
 
 var loadPicker = function loadPicker() {
@@ -10770,18 +10771,36 @@ var pickerCallback = function pickerCallback(data) {
                 Authorization: 'Bearer ' + oauthToken
             },
             success: function success(text) {
-                var scriptElement = document.getElementById("script");
-                _fountainReader2.default.load(text, scriptElement, function (element) {
-                    var doc = new _jspdf2.default({
-                        format: "letter"
-                    });
-
-                    doc.fromHTML(element);
-                    doc.save();
+                var scriptElement = (0, _jquery2.default)("#script");
+                scriptElement.empty();
+                _fountainReader2.default.load(text, scriptElement, function () {
+                    (0, _jquery2.default)("#download").show();
                 });
             }
         });
     }
+};
+
+var downloadPdf = function downloadPdf() {
+    var pdf = new _jspdf2.default({
+        format: 'letter'
+    });
+
+    var promises = [];
+
+    (0, _jquery2.default)("#script").each(function (i, page) {
+        var deferred = _jquery2.default.Deferred();
+
+        (0, _html2canvas2.default)(onrendered, function (canvas) {
+            deferred.resolve(canvas);
+        });
+
+        promises.push(deferred.promise());
+    });
+
+    _jquery2.default.when.apply(_jquery2.default, promises).done(function (something) {
+        console.log(something);
+    });
 };
 
 var updateSigninStatus = function updateSigninStatus(isSignedIn) {
@@ -11036,10 +11055,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
         _fountain2.default.parse(file, function (result) {
             if (result) {
                 if (result.title && result.html.title_page) {
-                    (0, _jquery2.default)(element).append(page(result.html.title_page, true));
+                    element.append(page(result.html.title_page, true));
                 }
-                (0, _jquery2.default)(element).append(page(result.html.script));
-                callback(element[0]);
+                element.append(page(result.html.script));
+                callback();
             }
         });
     };
