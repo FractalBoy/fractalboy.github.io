@@ -11036,10 +11036,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
         _fountain2.default.parse(file, function (result) {
             if (result) {
                 if (result.title && result.html.title_page) {
-                    element.append(page(result.html.title_page, true));
+                    (0, _jquery2.default)(element).append(page(result.html.title_page, true));
                 }
-                element.append(page(result.html.script));
-                callback(element);
+                (0, _jquery2.default)(element).append(page(result.html.script));
+                callback(element[0]);
             }
         });
     };
