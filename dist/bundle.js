@@ -182,12 +182,10 @@ var pickerCallback = function pickerCallback(data) {
                     titlePageElement.innerHTML = output.html.title_page;
                     scriptElement.innerHTML = output.html.script;
 
-                    doc.addHTML(titlePageElement).done(function () {
-                        doc.addPage().done(function () {
-                            doc.addHTML(scriptElement).done(function () {
-                                doc.save("test.pdf");
-                            });
-                        });
+                    doc.addHTML(titlePageElement);
+                    doc.addPage().done(function (newDoc) {
+                        newDoc.addHTML(scriptElement);
+                        newDoc.save("test.pdf");
                     });
                 });
             }
