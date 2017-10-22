@@ -10807,15 +10807,24 @@ var downloadPdf = function downloadPdf() {
 
         for (var i = 0; i < results.length; i++) {
             var canvas = results[i];
-            var image = canvas.toDataURL();
-            pdf.addImage(image, "PNG", 0, 0);
+            //setPixelated(canvas.getContext('2d'));
+            var image = canvas.toDataURL("image/jpeg", 1);
+            pdf.addImage(image, "JPEG", 0, 0);
             if (i !== results.length - 1) {
                 pdf.addPage();
             }
         }
-        pdf.output("dataurlnewwindow");
+        pdf.save("test.pdf");
     });
 };
+
+//let setPixelated = (context) => {
+//    context["imageSmoothingEnabled"] = false;
+//    context["mozImageSmoothingEnabled"] = false;
+//    context["oImageSmoothingEnabled"] = false;
+//    context["webkitImageSmoothingEnabled"] = false;
+//    context["msImageSmoothingEnabled"] = false;
+//}
 
 var updateSigninStatus = function updateSigninStatus(isSignedIn) {
     if (isSignedIn) {
