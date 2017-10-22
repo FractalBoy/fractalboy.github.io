@@ -60,486 +60,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-// fountain-js 0.1.10
-// http://www.opensource.org/licenses/mit-license.php
-// Copyright (c) 2012 Matt Daly
-
-;(function () {
-  'use strict';
-
-  var regex = {
-    title_page: /^((?:title|credit|author[s]?|source|notes|draft date|date|contact|copyright)\:)/gim,
-
-    scene_heading: /^((?:\*{0,3}_?)?(?:(?:int|ext|est|i\/e)[. ]).+)|^(?:\.(?!\.+))(.+)/i,
-    scene_number: /( *#(.+)# *)/,
-
-    transition: /^((?:FADE (?:TO BLACK|OUT)|CUT TO BLACK)\.|.+ TO\:)|^(?:> *)(.+)/,
-
-    dialogue: /^([A-Z*_]+[0-9A-Z (._\-')]*)(\^?)?(?:\n(?!\n+))([\s\S]+)/,
-    parenthetical: /^(\(.+\))$/,
-
-    action: /^(.+)/g,
-    centered: /^(?:> *)(.+)(?: *<)(\n.+)*/g,
-
-    section: /^(#+)(?: *)(.*)/,
-    synopsis: /^(?:\=(?!\=+) *)(.*)/,
-
-    note: /^(?:\[{2}(?!\[+))(.+)(?:\]{2}(?!\[+))$/,
-    note_inline: /(?:\[{2}(?!\[+))([\s\S]+?)(?:\]{2}(?!\[+))/g,
-    boneyard: /(^\/\*|^\*\/)$/g,
-
-    page_break: /^\={3,}$/,
-    line_break: /^ {2}$/,
-
-    emphasis: /(_|\*{1,3}|_\*{1,3}|\*{1,3}_)(.+)(_|\*{1,3}|_\*{1,3}|\*{1,3}_)/g,
-    bold_italic_underline: /(_{1}\*{3}(?=.+\*{3}_{1})|\*{3}_{1}(?=.+_{1}\*{3}))(.+?)(\*{3}_{1}|_{1}\*{3})/g,
-    bold_underline: /(_{1}\*{2}(?=.+\*{2}_{1})|\*{2}_{1}(?=.+_{1}\*{2}))(.+?)(\*{2}_{1}|_{1}\*{2})/g,
-    italic_underline: /(?:_{1}\*{1}(?=.+\*{1}_{1})|\*{1}_{1}(?=.+_{1}\*{1}))(.+?)(\*{1}_{1}|_{1}\*{1})/g,
-    bold_italic: /(\*{3}(?=.+\*{3}))(.+?)(\*{3})/g,
-    bold: /(\*{2}(?=.+\*{2}))(.+?)(\*{2})/g,
-    italic: /(\*{1}(?=.+\*{1}))(.+?)(\*{1})/g,
-    underline: /(_{1}(?=.+_{1}))(.+?)(_{1})/g,
-
-    splitter: /\n{2,}/g,
-    cleaner: /^\n+|\n+$/,
-    standardizer: /\r\n|\r/g,
-    whitespacer: /^\t+|^ {3,}/gm
-  };
-
-  var lexer = function lexer(script) {
-    return script.replace(regex.boneyard, '\n$1\n').replace(regex.standardizer, '\n').replace(regex.cleaner, '').replace(regex.whitespacer, '');
-  };
-
-  var tokenize = function tokenize(script) {
-    var src = lexer(script).split(regex.splitter),
-        i = src.length,
-        line,
-        match,
-        parts,
-        text,
-        meta,
-        x,
-        xlen,
-        dual,
-        tokens = [];
-
-    while (i--) {
-      line = src[i];
-
-      // title page
-      if (regex.title_page.test(line)) {
-        match = line.replace(regex.title_page, '\n$1').split(regex.splitter).reverse();
-        for (x = 0, xlen = match.length; x < xlen; x++) {
-          parts = match[x].replace(regex.cleaner, '').split(/\:\n*/);
-          tokens.push({ type: parts[0].trim().toLowerCase().replace(' ', '_'), text: parts[1].trim() });
-        }
-        continue;
-      }
-
-      // scene headings
-      if (match = line.match(regex.scene_heading)) {
-        text = match[1] || match[2];
-
-        if (text.indexOf('  ') !== text.length - 2) {
-          if (meta = text.match(regex.scene_number)) {
-            meta = meta[2];
-            text = text.replace(regex.scene_number, '');
-          }
-          tokens.push({ type: 'scene_heading', text: text, scene_number: meta || undefined });
-        }
-        continue;
-      }
-
-      // centered
-      if (match = line.match(regex.centered)) {
-        tokens.push({ type: 'centered', text: match[0].replace(/>|</g, '') });
-        continue;
-      }
-
-      // transitions
-      if (match = line.match(regex.transition)) {
-        tokens.push({ type: 'transition', text: match[1] || match[2] });
-        continue;
-      }
-
-      // dialogue blocks - characters, parentheticals and dialogue
-      if (match = line.match(regex.dialogue)) {
-        if (match[1].indexOf('  ') !== match[1].length - 2) {
-          // we're iterating from the bottom up, so we need to push these backwards
-          if (match[2]) {
-            tokens.push({ type: 'dual_dialogue_end' });
-          }
-
-          tokens.push({ type: 'dialogue_end' });
-
-          parts = match[3].split(/(\(.+\))(?:\n+)/).reverse();
-
-          for (x = 0, xlen = parts.length; x < xlen; x++) {
-            text = parts[x];
-
-            if (text.length > 0) {
-              tokens.push({ type: regex.parenthetical.test(text) ? 'parenthetical' : 'dialogue', text: text });
-            }
-          }
-
-          tokens.push({ type: 'character', text: match[1].trim() });
-          tokens.push({ type: 'dialogue_begin', dual: match[2] ? 'right' : dual ? 'left' : undefined });
-
-          if (dual) {
-            tokens.push({ type: 'dual_dialogue_begin' });
-          }
-
-          dual = match[2] ? true : false;
-          continue;
-        }
-      }
-
-      // section
-      if (match = line.match(regex.section)) {
-        tokens.push({ type: 'section', text: match[2], depth: match[1].length });
-        continue;
-      }
-
-      // synopsis
-      if (match = line.match(regex.synopsis)) {
-        tokens.push({ type: 'synopsis', text: match[1] });
-        continue;
-      }
-
-      // notes
-      if (match = line.match(regex.note)) {
-        tokens.push({ type: 'note', text: match[1] });
-        continue;
-      }
-
-      // boneyard
-      if (match = line.match(regex.boneyard)) {
-        tokens.push({ type: match[0][0] === '/' ? 'boneyard_begin' : 'boneyard_end' });
-        continue;
-      }
-
-      // page breaks
-      if (regex.page_break.test(line)) {
-        tokens.push({ type: 'page_break' });
-        continue;
-      }
-
-      // line breaks
-      if (regex.line_break.test(line)) {
-        tokens.push({ type: 'line_break' });
-        continue;
-      }
-
-      tokens.push({ type: 'action', text: line });
-    }
-
-    return tokens;
-  };
-
-  var inline = {
-    note: '<!-- $1 -->',
-
-    line_break: '<br />',
-
-    bold_italic_underline: '<span class=\"bold italic underline\">$2</span>',
-    bold_underline: '<span class=\"bold underline\">$2</span>',
-    italic_underline: '<span class=\"italic underline\">$2</span>',
-    bold_italic: '<span class=\"bold italic\">$2</span>',
-    bold: '<span class=\"bold\">$2</span>',
-    italic: '<span class=\"italic\">$2</span>',
-    underline: '<span class=\"underline\">$2</span>'
-  };
-
-  inline.lexer = function (s) {
-    if (!s) {
-      return;
-    }
-
-    var styles = ['underline', 'italic', 'bold', 'bold_italic', 'italic_underline', 'bold_underline', 'bold_italic_underline'],
-        i = styles.length,
-        style,
-        match;
-
-    s = s.replace(regex.note_inline, inline.note).replace(/\\\*/g, '[star]').replace(/\\_/g, '[underline]').replace(/\n/g, inline.line_break);
-
-    // if (regex.emphasis.test(s)) {                         // this was causing only every other occurence of an emphasis syntax to be parsed
-    while (i--) {
-      style = styles[i];
-      match = regex[style];
-
-      if (match.test(s)) {
-        s = s.replace(match, inline[style]);
-      }
-    }
-    // }
-
-    return s.replace(/\[star\]/g, '*').replace(/\[underline\]/g, '_').trim();
-  };
-
-  var parse = function parse(script, toks, callback) {
-    if (callback === undefined && typeof toks === 'function') {
-      callback = toks;
-      toks = undefined;
-    }
-
-    var tokens = tokenize(script),
-        i = tokens.length,
-        token,
-        title,
-        title_page = [],
-        html = [],
-        output;
-
-    while (i--) {
-      token = tokens[i];
-      token.text = inline.lexer(token.text);
-
-      switch (token.type) {
-        case 'title':
-          title_page.push('<h1>' + token.text + '</h1>');title = token.text.replace('<br />', ' ').replace(/<(?:.|\n)*?>/g, '');break;
-        case 'credit':
-          title_page.push('<p class=\"credit\">' + token.text + '</p>');break;
-        case 'author':
-          title_page.push('<p class=\"authors\">' + token.text + '</p>');break;
-        case 'authors':
-          title_page.push('<p class=\"authors\">' + token.text + '</p>');break;
-        case 'source':
-          title_page.push('<p class=\"source\">' + token.text + '</p>');break;
-        case 'notes':
-          title_page.push('<p class=\"notes\">' + token.text + '</p>');break;
-        case 'draft_date':
-          title_page.push('<p class=\"draft-date\">' + token.text + '</p>');break;
-        case 'date':
-          title_page.push('<p class=\"date\">' + token.text + '</p>');break;
-        case 'contact':
-          title_page.push('<p class=\"contact\">' + token.text + '</p>');break;
-        case 'copyright':
-          title_page.push('<p class=\"copyright\">' + token.text + '</p>');break;
-
-        case 'scene_heading':
-          html.push('<h3' + (token.scene_number ? ' id=\"' + token.scene_number + '\">' : '>') + token.text + '</h3>');break;
-        case 'transition':
-          html.push('<h2>' + token.text + '</h2>');break;
-
-        case 'dual_dialogue_begin':
-          html.push('<div class=\"dual-dialogue\">');break;
-        case 'dialogue_begin':
-          html.push('<div class=\"dialogue' + (token.dual ? ' ' + token.dual : '') + '\">');break;
-        case 'character':
-          html.push('<h4>' + token.text + '</h4>');break;
-        case 'parenthetical':
-          html.push('<p class=\"parenthetical\">' + token.text + '</p>');break;
-        case 'dialogue':
-          html.push('<p>' + token.text + '</p>');break;
-        case 'dialogue_end':
-          html.push('</div> ');break;
-        case 'dual_dialogue_end':
-          html.push('</div> ');break;
-
-        case 'section':
-          html.push('<p class=\"section\" data-depth=\"' + token.depth + '\">' + token.text + '</p>');break;
-        case 'synopsis':
-          html.push('<p class=\"synopsis\">' + token.text + '</p>');break;
-
-        case 'note':
-          html.push('<!-- ' + token.text + '-->');break;
-        case 'boneyard_begin':
-          html.push('<!-- ');break;
-        case 'boneyard_end':
-          html.push(' -->');break;
-
-        case 'action':
-          html.push('<p>' + token.text + '</p>');break;
-        case 'centered':
-          html.push('<p class=\"centered\">' + token.text + '</p>');break;
-
-        case 'page_break':
-          html.push('<hr />');break;
-        case 'line_break':
-          html.push('<br />');break;
-      }
-    }
-
-    output = { title: title, html: { title_page: title_page.join(''), script: html.join('') }, tokens: toks ? tokens.reverse() : undefined };
-
-    if (typeof callback === 'function') {
-      return callback(output);
-    }
-
-    return output;
-  };
-
-  var fountain = function fountain(script, callback) {
-    return fountain.parse(script, callback);
-  };
-
-  fountain.parse = function (script, tokens, callback) {
-    return parse(script, tokens, callback);
-  };
-
-  if (true) {
-    module.exports = fountain;
-  } else {
-    this.fountain = fountain;
-  }
-}).call(undefined);
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _jquery = __webpack_require__(3);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _jspdf = __webpack_require__(4);
-
-var _jspdf2 = _interopRequireDefault(_jspdf);
-
-var _fountain = __webpack_require__(1);
-
-var _fountain2 = _interopRequireDefault(_fountain);
-
-var _fountainReader = __webpack_require__(7);
-
-var _fountainReader2 = _interopRequireDefault(_fountainReader);
-
-var _html2canvas = __webpack_require__(8);
-
-var _html2canvas2 = _interopRequireDefault(_html2canvas);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var API_KEY = "AIzaSyBXCaeaIaRz9YC7n52VYqCFNAmB4jUmyaI";
-var PICKER_API_KEY = "AIzaSyCAO-spugKEwk9MGAX253RhGUHB6H72u5g";
-var APP_ID = "269066866991";
-var CLIENT_ID = "269066866991-qska5al6semmmli31jdm6k35liblc91o.apps.googleusercontent.com";
-
-var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
-var SCOPES = "https://www.googleapis.com/auth/drive";
-
-var authorizeButton = document.getElementById("authorize-button");
-var signoutButton = document.getElementById("signout-button");
-var pickerApiLoaded = false;
-var oauthToken = void 0;
-
-(0, _jquery2.default)(function () {
-    (0, _jquery2.default)("#convert").click(loadPicker);
-});
-
-var loadPicker = function loadPicker() {
-    gapi.load('auth', { callback: onAuthApiLoad });
-    gapi.load('picker', { callback: onPickerApiLoad });
-};
-
-var onAuthApiLoad = function onAuthApiLoad() {
-    window.gapi.auth.authorize({
-        client_id: CLIENT_ID,
-        scope: SCOPES,
-        immediate: false
-    }, handleAuthResult);
-};
-
-var onPickerApiLoad = function onPickerApiLoad() {
-    pickerApiLoaded = true;
-    createPicker();
-};
-
-var handleAuthResult = function handleAuthResult(authResult) {
-    if (authResult && !authResult.error) {
-        oauthToken = authResult.access_token;
-        createPicker();
-    }
-};
-
-var createPicker = function createPicker() {
-    if (pickerApiLoaded && oauthToken) {
-        var view = new google.picker.View(google.picker.ViewId.DOCS);
-        view.setMimeTypes("application/vnd.google-apps.document");
-        var picker = new google.picker.PickerBuilder().addView(view).addView(new google.picker.DocsUploadView()).setDeveloperKey(PICKER_API_KEY).setAppId(APP_ID).setOAuthToken(oauthToken).setCallback(pickerCallback).build();
-        picker.setVisible(true);
-    }
-};
-
-var pickerCallback = function pickerCallback(data) {
-    if (data.action === google.picker.Action.PICKED) {
-        var fileId = data.docs[0].id;
-        _jquery2.default.get({
-            url: 'https://www.googleapis.com/drive/v2/files/' + fileId + '/export?mimeType=text/plain',
-            headers: {
-                Authorization: 'Bearer ' + oauthToken
-            },
-            success: function success(text) {
-                var scriptElement = document.getElementById("script");
-                _fountainReader2.default.load(text, scriptElement, function (element) {
-                    var doc = new _jspdf2.default({
-                        format: "letter"
-                    });
-
-                    doc.fromHTML(element);
-                    doc.save();
-                });
-            }
-        });
-    }
-};
-
-var updateSigninStatus = function updateSigninStatus(isSignedIn) {
-    if (isSignedIn) {
-        authorizeButton.style.display = 'none';
-        signoutButton.style.display = 'block';
-        listFiles();
-    } else {
-        authorizeButton.style.display = 'block';
-        signoutButton.style.display = 'none';
-    }
-};
-
-window.loadPicker = loadPicker;
-window.html2canvas = _html2canvas2.default;
-
-/***/ }),
-/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10799,6 +10324,481 @@ return jQuery;
 
 
 /***/ }),
+/* 1 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// fountain-js 0.1.10
+// http://www.opensource.org/licenses/mit-license.php
+// Copyright (c) 2012 Matt Daly
+
+;(function () {
+  'use strict';
+
+  var regex = {
+    title_page: /^((?:title|credit|author[s]?|source|notes|draft date|date|contact|copyright)\:)/gim,
+
+    scene_heading: /^((?:\*{0,3}_?)?(?:(?:int|ext|est|i\/e)[. ]).+)|^(?:\.(?!\.+))(.+)/i,
+    scene_number: /( *#(.+)# *)/,
+
+    transition: /^((?:FADE (?:TO BLACK|OUT)|CUT TO BLACK)\.|.+ TO\:)|^(?:> *)(.+)/,
+
+    dialogue: /^([A-Z*_]+[0-9A-Z (._\-')]*)(\^?)?(?:\n(?!\n+))([\s\S]+)/,
+    parenthetical: /^(\(.+\))$/,
+
+    action: /^(.+)/g,
+    centered: /^(?:> *)(.+)(?: *<)(\n.+)*/g,
+
+    section: /^(#+)(?: *)(.*)/,
+    synopsis: /^(?:\=(?!\=+) *)(.*)/,
+
+    note: /^(?:\[{2}(?!\[+))(.+)(?:\]{2}(?!\[+))$/,
+    note_inline: /(?:\[{2}(?!\[+))([\s\S]+?)(?:\]{2}(?!\[+))/g,
+    boneyard: /(^\/\*|^\*\/)$/g,
+
+    page_break: /^\={3,}$/,
+    line_break: /^ {2}$/,
+
+    emphasis: /(_|\*{1,3}|_\*{1,3}|\*{1,3}_)(.+)(_|\*{1,3}|_\*{1,3}|\*{1,3}_)/g,
+    bold_italic_underline: /(_{1}\*{3}(?=.+\*{3}_{1})|\*{3}_{1}(?=.+_{1}\*{3}))(.+?)(\*{3}_{1}|_{1}\*{3})/g,
+    bold_underline: /(_{1}\*{2}(?=.+\*{2}_{1})|\*{2}_{1}(?=.+_{1}\*{2}))(.+?)(\*{2}_{1}|_{1}\*{2})/g,
+    italic_underline: /(?:_{1}\*{1}(?=.+\*{1}_{1})|\*{1}_{1}(?=.+_{1}\*{1}))(.+?)(\*{1}_{1}|_{1}\*{1})/g,
+    bold_italic: /(\*{3}(?=.+\*{3}))(.+?)(\*{3})/g,
+    bold: /(\*{2}(?=.+\*{2}))(.+?)(\*{2})/g,
+    italic: /(\*{1}(?=.+\*{1}))(.+?)(\*{1})/g,
+    underline: /(_{1}(?=.+_{1}))(.+?)(_{1})/g,
+
+    splitter: /\n{2,}/g,
+    cleaner: /^\n+|\n+$/,
+    standardizer: /\r\n|\r/g,
+    whitespacer: /^\t+|^ {3,}/gm
+  };
+
+  var lexer = function lexer(script) {
+    return script.replace(regex.boneyard, '\n$1\n').replace(regex.standardizer, '\n').replace(regex.cleaner, '').replace(regex.whitespacer, '');
+  };
+
+  var tokenize = function tokenize(script) {
+    var src = lexer(script).split(regex.splitter),
+        i = src.length,
+        line,
+        match,
+        parts,
+        text,
+        meta,
+        x,
+        xlen,
+        dual,
+        tokens = [];
+
+    while (i--) {
+      line = src[i];
+
+      // title page
+      if (regex.title_page.test(line)) {
+        match = line.replace(regex.title_page, '\n$1').split(regex.splitter).reverse();
+        for (x = 0, xlen = match.length; x < xlen; x++) {
+          parts = match[x].replace(regex.cleaner, '').split(/\:\n*/);
+          tokens.push({ type: parts[0].trim().toLowerCase().replace(' ', '_'), text: parts[1].trim() });
+        }
+        continue;
+      }
+
+      // scene headings
+      if (match = line.match(regex.scene_heading)) {
+        text = match[1] || match[2];
+
+        if (text.indexOf('  ') !== text.length - 2) {
+          if (meta = text.match(regex.scene_number)) {
+            meta = meta[2];
+            text = text.replace(regex.scene_number, '');
+          }
+          tokens.push({ type: 'scene_heading', text: text, scene_number: meta || undefined });
+        }
+        continue;
+      }
+
+      // centered
+      if (match = line.match(regex.centered)) {
+        tokens.push({ type: 'centered', text: match[0].replace(/>|</g, '') });
+        continue;
+      }
+
+      // transitions
+      if (match = line.match(regex.transition)) {
+        tokens.push({ type: 'transition', text: match[1] || match[2] });
+        continue;
+      }
+
+      // dialogue blocks - characters, parentheticals and dialogue
+      if (match = line.match(regex.dialogue)) {
+        if (match[1].indexOf('  ') !== match[1].length - 2) {
+          // we're iterating from the bottom up, so we need to push these backwards
+          if (match[2]) {
+            tokens.push({ type: 'dual_dialogue_end' });
+          }
+
+          tokens.push({ type: 'dialogue_end' });
+
+          parts = match[3].split(/(\(.+\))(?:\n+)/).reverse();
+
+          for (x = 0, xlen = parts.length; x < xlen; x++) {
+            text = parts[x];
+
+            if (text.length > 0) {
+              tokens.push({ type: regex.parenthetical.test(text) ? 'parenthetical' : 'dialogue', text: text });
+            }
+          }
+
+          tokens.push({ type: 'character', text: match[1].trim() });
+          tokens.push({ type: 'dialogue_begin', dual: match[2] ? 'right' : dual ? 'left' : undefined });
+
+          if (dual) {
+            tokens.push({ type: 'dual_dialogue_begin' });
+          }
+
+          dual = match[2] ? true : false;
+          continue;
+        }
+      }
+
+      // section
+      if (match = line.match(regex.section)) {
+        tokens.push({ type: 'section', text: match[2], depth: match[1].length });
+        continue;
+      }
+
+      // synopsis
+      if (match = line.match(regex.synopsis)) {
+        tokens.push({ type: 'synopsis', text: match[1] });
+        continue;
+      }
+
+      // notes
+      if (match = line.match(regex.note)) {
+        tokens.push({ type: 'note', text: match[1] });
+        continue;
+      }
+
+      // boneyard
+      if (match = line.match(regex.boneyard)) {
+        tokens.push({ type: match[0][0] === '/' ? 'boneyard_begin' : 'boneyard_end' });
+        continue;
+      }
+
+      // page breaks
+      if (regex.page_break.test(line)) {
+        tokens.push({ type: 'page_break' });
+        continue;
+      }
+
+      // line breaks
+      if (regex.line_break.test(line)) {
+        tokens.push({ type: 'line_break' });
+        continue;
+      }
+
+      tokens.push({ type: 'action', text: line });
+    }
+
+    return tokens;
+  };
+
+  var inline = {
+    note: '<!-- $1 -->',
+
+    line_break: '<br />',
+
+    bold_italic_underline: '<span class=\"bold italic underline\">$2</span>',
+    bold_underline: '<span class=\"bold underline\">$2</span>',
+    italic_underline: '<span class=\"italic underline\">$2</span>',
+    bold_italic: '<span class=\"bold italic\">$2</span>',
+    bold: '<span class=\"bold\">$2</span>',
+    italic: '<span class=\"italic\">$2</span>',
+    underline: '<span class=\"underline\">$2</span>'
+  };
+
+  inline.lexer = function (s) {
+    if (!s) {
+      return;
+    }
+
+    var styles = ['underline', 'italic', 'bold', 'bold_italic', 'italic_underline', 'bold_underline', 'bold_italic_underline'],
+        i = styles.length,
+        style,
+        match;
+
+    s = s.replace(regex.note_inline, inline.note).replace(/\\\*/g, '[star]').replace(/\\_/g, '[underline]').replace(/\n/g, inline.line_break);
+
+    // if (regex.emphasis.test(s)) {                         // this was causing only every other occurence of an emphasis syntax to be parsed
+    while (i--) {
+      style = styles[i];
+      match = regex[style];
+
+      if (match.test(s)) {
+        s = s.replace(match, inline[style]);
+      }
+    }
+    // }
+
+    return s.replace(/\[star\]/g, '*').replace(/\[underline\]/g, '_').trim();
+  };
+
+  var parse = function parse(script, toks, callback) {
+    if (callback === undefined && typeof toks === 'function') {
+      callback = toks;
+      toks = undefined;
+    }
+
+    var tokens = tokenize(script),
+        i = tokens.length,
+        token,
+        title,
+        title_page = [],
+        html = [],
+        output;
+
+    while (i--) {
+      token = tokens[i];
+      token.text = inline.lexer(token.text);
+
+      switch (token.type) {
+        case 'title':
+          title_page.push('<h1>' + token.text + '</h1>');title = token.text.replace('<br />', ' ').replace(/<(?:.|\n)*?>/g, '');break;
+        case 'credit':
+          title_page.push('<p class=\"credit\">' + token.text + '</p>');break;
+        case 'author':
+          title_page.push('<p class=\"authors\">' + token.text + '</p>');break;
+        case 'authors':
+          title_page.push('<p class=\"authors\">' + token.text + '</p>');break;
+        case 'source':
+          title_page.push('<p class=\"source\">' + token.text + '</p>');break;
+        case 'notes':
+          title_page.push('<p class=\"notes\">' + token.text + '</p>');break;
+        case 'draft_date':
+          title_page.push('<p class=\"draft-date\">' + token.text + '</p>');break;
+        case 'date':
+          title_page.push('<p class=\"date\">' + token.text + '</p>');break;
+        case 'contact':
+          title_page.push('<p class=\"contact\">' + token.text + '</p>');break;
+        case 'copyright':
+          title_page.push('<p class=\"copyright\">' + token.text + '</p>');break;
+
+        case 'scene_heading':
+          html.push('<h3' + (token.scene_number ? ' id=\"' + token.scene_number + '\">' : '>') + token.text + '</h3>');break;
+        case 'transition':
+          html.push('<h2>' + token.text + '</h2>');break;
+
+        case 'dual_dialogue_begin':
+          html.push('<div class=\"dual-dialogue\">');break;
+        case 'dialogue_begin':
+          html.push('<div class=\"dialogue' + (token.dual ? ' ' + token.dual : '') + '\">');break;
+        case 'character':
+          html.push('<h4>' + token.text + '</h4>');break;
+        case 'parenthetical':
+          html.push('<p class=\"parenthetical\">' + token.text + '</p>');break;
+        case 'dialogue':
+          html.push('<p>' + token.text + '</p>');break;
+        case 'dialogue_end':
+          html.push('</div> ');break;
+        case 'dual_dialogue_end':
+          html.push('</div> ');break;
+
+        case 'section':
+          html.push('<p class=\"section\" data-depth=\"' + token.depth + '\">' + token.text + '</p>');break;
+        case 'synopsis':
+          html.push('<p class=\"synopsis\">' + token.text + '</p>');break;
+
+        case 'note':
+          html.push('<!-- ' + token.text + '-->');break;
+        case 'boneyard_begin':
+          html.push('<!-- ');break;
+        case 'boneyard_end':
+          html.push(' -->');break;
+
+        case 'action':
+          html.push('<p>' + token.text + '</p>');break;
+        case 'centered':
+          html.push('<p class=\"centered\">' + token.text + '</p>');break;
+
+        case 'page_break':
+          html.push('<hr />');break;
+        case 'line_break':
+          html.push('<br />');break;
+      }
+    }
+
+    output = { title: title, html: { title_page: title_page.join(''), script: html.join('') }, tokens: toks ? tokens.reverse() : undefined };
+
+    if (typeof callback === 'function') {
+      return callback(output);
+    }
+
+    return output;
+  };
+
+  var fountain = function fountain(script, callback) {
+    return fountain.parse(script, callback);
+  };
+
+  fountain.parse = function (script, tokens, callback) {
+    return parse(script, tokens, callback);
+  };
+
+  if (true) {
+    module.exports = fountain;
+  } else {
+    this.fountain = fountain;
+  }
+}).call(undefined);
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _jspdf = __webpack_require__(4);
+
+var _jspdf2 = _interopRequireDefault(_jspdf);
+
+var _fountain = __webpack_require__(2);
+
+var _fountain2 = _interopRequireDefault(_fountain);
+
+var _fountainReader = __webpack_require__(7);
+
+var _fountainReader2 = _interopRequireDefault(_fountainReader);
+
+var _html2canvas = __webpack_require__(8);
+
+var _html2canvas2 = _interopRequireDefault(_html2canvas);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var API_KEY = "AIzaSyBXCaeaIaRz9YC7n52VYqCFNAmB4jUmyaI";
+var PICKER_API_KEY = "AIzaSyCAO-spugKEwk9MGAX253RhGUHB6H72u5g";
+var APP_ID = "269066866991";
+var CLIENT_ID = "269066866991-qska5al6semmmli31jdm6k35liblc91o.apps.googleusercontent.com";
+
+var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
+var SCOPES = "https://www.googleapis.com/auth/drive";
+
+var authorizeButton = document.getElementById("authorize-button");
+var signoutButton = document.getElementById("signout-button");
+var pickerApiLoaded = false;
+var oauthToken = void 0;
+
+(0, _jquery2.default)(function () {
+    (0, _jquery2.default)("#convert").click(loadPicker);
+});
+
+var loadPicker = function loadPicker() {
+    gapi.load('auth', { callback: onAuthApiLoad });
+    gapi.load('picker', { callback: onPickerApiLoad });
+};
+
+var onAuthApiLoad = function onAuthApiLoad() {
+    window.gapi.auth.authorize({
+        client_id: CLIENT_ID,
+        scope: SCOPES,
+        immediate: false
+    }, handleAuthResult);
+};
+
+var onPickerApiLoad = function onPickerApiLoad() {
+    pickerApiLoaded = true;
+    createPicker();
+};
+
+var handleAuthResult = function handleAuthResult(authResult) {
+    if (authResult && !authResult.error) {
+        oauthToken = authResult.access_token;
+        createPicker();
+    }
+};
+
+var createPicker = function createPicker() {
+    if (pickerApiLoaded && oauthToken) {
+        var view = new google.picker.View(google.picker.ViewId.DOCS);
+        view.setMimeTypes("application/vnd.google-apps.document");
+        var picker = new google.picker.PickerBuilder().addView(view).addView(new google.picker.DocsUploadView()).setDeveloperKey(PICKER_API_KEY).setAppId(APP_ID).setOAuthToken(oauthToken).setCallback(pickerCallback).build();
+        picker.setVisible(true);
+    }
+};
+
+var pickerCallback = function pickerCallback(data) {
+    if (data.action === google.picker.Action.PICKED) {
+        var fileId = data.docs[0].id;
+        _jquery2.default.get({
+            url: 'https://www.googleapis.com/drive/v2/files/' + fileId + '/export?mimeType=text/plain',
+            headers: {
+                Authorization: 'Bearer ' + oauthToken
+            },
+            success: function success(text) {
+                var scriptElement = document.getElementById("script");
+                _fountainReader2.default.load(text, scriptElement, function (element) {
+                    var doc = new _jspdf2.default({
+                        format: "letter"
+                    });
+
+                    doc.fromHTML(element);
+                    doc.save();
+                });
+            }
+        });
+    }
+};
+
+var updateSigninStatus = function updateSigninStatus(isSignedIn) {
+    if (isSignedIn) {
+        authorizeButton.style.display = 'none';
+        signoutButton.style.display = 'block';
+        listFiles();
+    } else {
+        authorizeButton.style.display = 'block';
+        signoutButton.style.display = 'none';
+    }
+};
+
+window.loadPicker = loadPicker;
+window.html2canvas = _html2canvas2.default;
+
+/***/ }),
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10976,7 +10976,7 @@ function(t){var e;e=function(){function e(t){var e,n,r,i,o,a,s,c,l,u,h,f,d,p,m;f
  * 
  */
 var a=function(){function t(){this.pos=0,this.bufferLength=0,this.eof=!1,this.buffer=null}return t.prototype={ensureBuffer:function(t){var e=this.buffer,n=e?e.byteLength:0;if(t<n)return e;for(var r=512;r<t;)r<<=1;for(var i=new Uint8Array(r),o=0;o<n;++o)i[o]=e[o];return this.buffer=i},getByte:function(){for(var t=this.pos;this.bufferLength<=t;){if(this.eof)return null;this.readBlock()}return this.buffer[this.pos++]},getBytes:function(t){var e=this.pos;if(t){this.ensureBuffer(e+t);for(r=e+t;!this.eof&&this.bufferLength<r;)this.readBlock();var n=this.bufferLength;r>n&&(r=n)}else{for(;!this.eof;)this.readBlock();var r=this.bufferLength}return this.pos=r,this.buffer.subarray(e,r)},lookChar:function(){for(var t=this.pos;this.bufferLength<=t;){if(this.eof)return null;this.readBlock()}return String.fromCharCode(this.buffer[this.pos])},getChar:function(){for(var t=this.pos;this.bufferLength<=t;){if(this.eof)return null;this.readBlock()}return String.fromCharCode(this.buffer[this.pos++])},makeSubStream:function(t,e,n){for(var r=t+e;this.bufferLength<=r&&!this.eof;)this.readBlock();return new Stream(this.buffer,t,e,n)},skip:function(t){t||(t=1),this.pos+=t},reset:function(){this.pos=0}},t}(),s=function(){function t(t){throw new Error(t)}function e(e){var n=0,r=e[n++],i=e[n++];-1!=r&&-1!=i||t("Invalid header in flate stream"),8!=(15&r)&&t("Unknown compression method in flate stream"),((r<<8)+i)%31!=0&&t("Bad FCHECK in flate stream"),32&i&&t("FDICT bit set in flate stream"),this.bytes=e,this.bytesPos=n,this.codeSize=0,this.codeBuf=0,a.call(this)}if("undefined"!=typeof Uint32Array){var n=new Uint32Array([16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15]),r=new Uint32Array([3,4,5,6,7,8,9,10,65547,65549,65551,65553,131091,131095,131099,131103,196643,196651,196659,196667,262211,262227,262243,262259,327811,327843,327875,327907,258,258,258]),i=new Uint32Array([1,2,3,4,65541,65543,131081,131085,196625,196633,262177,262193,327745,327777,393345,393409,459009,459137,524801,525057,590849,591361,657409,658433,724993,727041,794625,798721,868353,876545]),o=[new Uint32Array([459008,524368,524304,524568,459024,524400,524336,590016,459016,524384,524320,589984,524288,524416,524352,590048,459012,524376,524312,589968,459028,524408,524344,590032,459020,524392,524328,59e4,524296,524424,524360,590064,459010,524372,524308,524572,459026,524404,524340,590024,459018,524388,524324,589992,524292,524420,524356,590056,459014,524380,524316,589976,459030,524412,524348,590040,459022,524396,524332,590008,524300,524428,524364,590072,459009,524370,524306,524570,459025,524402,524338,590020,459017,524386,524322,589988,524290,524418,524354,590052,459013,524378,524314,589972,459029,524410,524346,590036,459021,524394,524330,590004,524298,524426,524362,590068,459011,524374,524310,524574,459027,524406,524342,590028,459019,524390,524326,589996,524294,524422,524358,590060,459015,524382,524318,589980,459031,524414,524350,590044,459023,524398,524334,590012,524302,524430,524366,590076,459008,524369,524305,524569,459024,524401,524337,590018,459016,524385,524321,589986,524289,524417,524353,590050,459012,524377,524313,589970,459028,524409,524345,590034,459020,524393,524329,590002,524297,524425,524361,590066,459010,524373,524309,524573,459026,524405,524341,590026,459018,524389,524325,589994,524293,524421,524357,590058,459014,524381,524317,589978,459030,524413,524349,590042,459022,524397,524333,590010,524301,524429,524365,590074,459009,524371,524307,524571,459025,524403,524339,590022,459017,524387,524323,589990,524291,524419,524355,590054,459013,524379,524315,589974,459029,524411,524347,590038,459021,524395,524331,590006,524299,524427,524363,590070,459011,524375,524311,524575,459027,524407,524343,590030,459019,524391,524327,589998,524295,524423,524359,590062,459015,524383,524319,589982,459031,524415,524351,590046,459023,524399,524335,590014,524303,524431,524367,590078,459008,524368,524304,524568,459024,524400,524336,590017,459016,524384,524320,589985,524288,524416,524352,590049,459012,524376,524312,589969,459028,524408,524344,590033,459020,524392,524328,590001,524296,524424,524360,590065,459010,524372,524308,524572,459026,524404,524340,590025,459018,524388,524324,589993,524292,524420,524356,590057,459014,524380,524316,589977,459030,524412,524348,590041,459022,524396,524332,590009,524300,524428,524364,590073,459009,524370,524306,524570,459025,524402,524338,590021,459017,524386,524322,589989,524290,524418,524354,590053,459013,524378,524314,589973,459029,524410,524346,590037,459021,524394,524330,590005,524298,524426,524362,590069,459011,524374,524310,524574,459027,524406,524342,590029,459019,524390,524326,589997,524294,524422,524358,590061,459015,524382,524318,589981,459031,524414,524350,590045,459023,524398,524334,590013,524302,524430,524366,590077,459008,524369,524305,524569,459024,524401,524337,590019,459016,524385,524321,589987,524289,524417,524353,590051,459012,524377,524313,589971,459028,524409,524345,590035,459020,524393,524329,590003,524297,524425,524361,590067,459010,524373,524309,524573,459026,524405,524341,590027,459018,524389,524325,589995,524293,524421,524357,590059,459014,524381,524317,589979,459030,524413,524349,590043,459022,524397,524333,590011,524301,524429,524365,590075,459009,524371,524307,524571,459025,524403,524339,590023,459017,524387,524323,589991,524291,524419,524355,590055,459013,524379,524315,589975,459029,524411,524347,590039,459021,524395,524331,590007,524299,524427,524363,590071,459011,524375,524311,524575,459027,524407,524343,590031,459019,524391,524327,589999,524295,524423,524359,590063,459015,524383,524319,589983,459031,524415,524351,590047,459023,524399,524335,590015,524303,524431,524367,590079]),9],s=[new Uint32Array([327680,327696,327688,327704,327684,327700,327692,327708,327682,327698,327690,327706,327686,327702,327694,0,327681,327697,327689,327705,327685,327701,327693,327709,327683,327699,327691,327707,327687,327703,327695,0]),5];return e.prototype=Object.create(a.prototype),e.prototype.getBits=function(e){for(var n,r=this.codeSize,i=this.codeBuf,o=this.bytes,a=this.bytesPos;r<e;)void 0===(n=o[a++])&&t("Bad encoding in flate stream"),i|=n<<r,r+=8;return n=i&(1<<e)-1,this.codeBuf=i>>e,this.codeSize=r-=e,this.bytesPos=a,n},e.prototype.getCode=function(e){for(var n=e[0],r=e[1],i=this.codeSize,o=this.codeBuf,a=this.bytes,s=this.bytesPos;i<r;){var c;void 0===(c=a[s++])&&t("Bad encoding in flate stream"),o|=c<<i,i+=8}var l=n[o&(1<<r)-1],u=l>>16,h=65535&l;return(0==i||i<u||0==u)&&t("Bad encoding in flate stream"),this.codeBuf=o>>u,this.codeSize=i-u,this.bytesPos=s,h},e.prototype.generateHuffmanTable=function(t){for(var e=t.length,n=0,r=0;r<e;++r)t[r]>n&&(n=t[r]);for(var i=1<<n,o=new Uint32Array(i),a=1,s=0,c=2;a<=n;++a,s<<=1,c<<=1)for(var l=0;l<e;++l)if(t[l]==a){for(var u=0,h=s,r=0;r<a;++r)u=u<<1|1&h,h>>=1;for(r=u;r<i;r+=c)o[r]=a<<16|l;++s}return[o,n]},e.prototype.readBlock=function(){function e(t,e,n,r,i){for(var o=t.getBits(n)+r;o-- >0;)e[p++]=i}var a=this.getBits(3);if(1&a&&(this.eof=!0),0!=(a>>=1)){var c,l;if(1==a)c=o,l=s;else if(2==a){for(var u=this.getBits(5)+257,h=this.getBits(5)+1,f=this.getBits(4)+4,d=Array(n.length),p=0;p<f;)d[n[p++]]=this.getBits(3);for(var m=this.generateHuffmanTable(d),g=0,p=0,w=u+h,y=new Array(w);p<w;){var v=this.getCode(m);16==v?e(this,y,2,3,g):17==v?e(this,y,3,3,g=0):18==v?e(this,y,7,11,g=0):y[p++]=g=v}c=this.generateHuffmanTable(y.slice(0,u)),l=this.generateHuffmanTable(y.slice(u,w))}else t("Unknown block type in flate stream");for(var b=(O=this.buffer)?O.length:0,x=this.bufferLength;;){var k=this.getCode(c);if(k<256)x+1>=b&&(b=(O=this.ensureBuffer(x+1)).length),O[x++]=k;else{if(256==k)return void(this.bufferLength=x);var _=(k=r[k-=257])>>16;_>0&&(_=this.getBits(_));g=(65535&k)+_;k=this.getCode(l),(_=(k=i[k])>>16)>0&&(_=this.getBits(_));var C=(65535&k)+_;x+g>=b&&(b=(O=this.ensureBuffer(x+g)).length);for(var A=0;A<g;++A,++x)O[x]=O[x-C]}}}else{var S,q=this.bytes,T=this.bytesPos;void 0===(S=q[T++])&&t("Bad block header in flate stream");var P=S;void 0===(S=q[T++])&&t("Bad block header in flate stream"),P|=S<<8,void 0===(S=q[T++])&&t("Bad block header in flate stream");var I=S;void 0===(S=q[T++])&&t("Bad block header in flate stream"),(I|=S<<8)!=(65535&~P)&&t("Bad uncompressed block length in flate stream"),this.codeBuf=0,this.codeSize=0;var E=this.bufferLength,O=this.ensureBuffer(E+P),F=E+P;this.bufferLength=F;for(var B=E;B<F;++B){if(void 0===(S=q[T++])){this.eof=!0;break}O[B]=S}this.bytesPos=T}},e}}();return function(t){var e="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";void 0===t.btoa&&(t.btoa=function(t){var n,r,i,o,a,s=0,c=0,l="",u=[];if(!t)return t;do{n=(a=t.charCodeAt(s++)<<16|t.charCodeAt(s++)<<8|t.charCodeAt(s++))>>18&63,r=a>>12&63,i=a>>6&63,o=63&a,u[c++]=e.charAt(n)+e.charAt(r)+e.charAt(i)+e.charAt(o)}while(s<t.length);l=u.join("");var h=t.length%3;return(h?l.slice(0,h-3):l)+"===".slice(h||3)}),void 0===t.atob&&(t.atob=function(t){var n,r,i,o,a,s,c=0,l=0,u=[];if(!t)return t;t+="";do{n=(s=e.indexOf(t.charAt(c++))<<18|e.indexOf(t.charAt(c++))<<12|(o=e.indexOf(t.charAt(c++)))<<6|(a=e.indexOf(t.charAt(c++))))>>16&255,r=s>>8&255,i=255&s,u[l++]=64==o?String.fromCharCode(n):64==a?String.fromCharCode(n,r):String.fromCharCode(n,r,i)}while(c<t.length);return u.join("")}),Array.prototype.map||(Array.prototype.map=function(t){if(void 0===this||null===this||"function"!=typeof t)throw new TypeError;for(var e=Object(this),n=e.length>>>0,r=new Array(n),i=arguments.length>1?arguments[1]:void 0,o=0;o<n;o++)o in e&&(r[o]=t.call(i,e[o],o,e));return r}),Array.isArray||(Array.isArray=function(t){return"[object Array]"===Object.prototype.toString.call(t)}),Array.prototype.forEach||(Array.prototype.forEach=function(t,e){if(void 0===this||null===this||"function"!=typeof t)throw new TypeError;for(var n=Object(this),r=n.length>>>0,i=0;i<r;i++)i in n&&t.call(e,n[i],i,n)}),Object.keys||(Object.keys=function(){var t=Object.prototype.hasOwnProperty,e=!{toString:null}.propertyIsEnumerable("toString"),n=["toString","toLocaleString","valueOf","hasOwnProperty","isPrototypeOf","propertyIsEnumerable","constructor"],r=n.length;return function(i){if("object"!=typeof i&&("function"!=typeof i||null===i))throw new TypeError;var o,a,s=[];for(o in i)t.call(i,o)&&s.push(o);if(e)for(a=0;a<r;a++)t.call(i,n[a])&&s.push(n[a]);return s}}()),String.prototype.trim||(String.prototype.trim=function(){return this.replace(/^\s+|\s+$/g,"")}),String.prototype.trimLeft||(String.prototype.trimLeft=function(){return this.replace(/^\s+/g,"")}),String.prototype.trimRight||(String.prototype.trimRight=function(){return this.replace(/\s+$/g,"")})}("undefined"!=typeof self&&self||"undefined"!=typeof window&&window||void 0),e});
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
 /* 5 */
@@ -11003,9 +11003,13 @@ module.exports = __webpack_amd_options__;
 "use strict";
 
 
-var _fountain = __webpack_require__(1);
+var _fountain = __webpack_require__(2);
 
 var _fountain2 = _interopRequireDefault(_fountain);
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11013,15 +11017,15 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
     var fountainReader = function fountainReader() {};
 
     var page = function page(html, isTitlePage) {
-        var $output = $(document.createElement('div')).addClass('page').html(html);
+        var $output = (0, _jquery2.default)(document.createElement('div')).addClass('page').html(html);
 
         if (isTitlePage) {
             $output.addClass('title-page');
         } else {
             $output.children('div.dialogue.dual').each(function () {
-                dual = $(this).prev('div.dialogue');
-                $(this).wrap($(document.createElement('div')).addClass('dual-dialogue'));
-                dual.prependTo($(this).parent());
+                dual = (0, _jquery2.default)(this).prev('div.dialogue');
+                (0, _jquery2.default)(this).wrap((0, _jquery2.default)(document.createElement('div')).addClass('dual-dialogue'));
+                dual.prependTo((0, _jquery2.default)(this).parent());
             });
         }
 
@@ -14594,7 +14598,7 @@ module.exports = XHR;
 
 },{}]},{},[4])(4)
 });
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ })
 /******/ ]);
