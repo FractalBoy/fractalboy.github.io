@@ -10808,7 +10808,7 @@ var downloadPdf = function downloadPdf() {
         for (var i = 0; i < results.length; i++) {
             var canvas = results[i];
             var image = canvas.toDataURL();
-            pdf.addImage(image);
+            pdf.addImage(image, "PNG", 0, 0);
             if (i !== results.length - 1) {
                 pdf.addPage();
             }
