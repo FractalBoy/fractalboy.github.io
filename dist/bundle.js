@@ -11009,7 +11009,7 @@ var _fountain2 = _interopRequireDefault(_fountain);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-(function () {
+;(function () {
     var fountainReader = function fountainReader() {};
 
     var page = function page(html, isTitlePage) {
@@ -11040,14 +11040,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
         });
     };
 
-    fountainReader.page = page;
+    fountainReader.load = load;
 
-    if (true) {
-        module.exports = fountainReader;
-    } else {
-        this.fountainReader = fountainReader;
-    }
-}).call(undefined);
+    module.exports = fountainReader;
+})();
 
 /***/ }),
 /* 8 */
