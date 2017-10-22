@@ -139,8 +139,15 @@ var pickerCallback = function pickerCallback(data) {
             headers: {
                 Authorization: 'Bearer ' + oauthToken
             },
-            success: function success(data) {
-                alert(data);
+            success: function success(text) {
+                _fountain2.default.parse(text, function (html) {
+                    var doc = new _jspdf2.default({
+                        format: "letter"
+                    });
+
+                    doc.addHTML(html);
+                    doc.save("test.pdf");
+                });
             }
         });
     }
