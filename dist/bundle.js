@@ -176,11 +176,15 @@ var pickerCallback = function pickerCallback(data) {
                         format: "letter"
                     });
 
-                    (0, _jquery2.default)("#title_page").html(output.html.title_page);
-                    (0, _jquery2.default)("#script").html(output.html.script);
-                    doc.addHTML((0, _jquery2.default)("#title_page").get(0));
+                    var titlePageElement = document.getElementById("title_page");
+                    var scriptElement = document.getElementById("script");
+
+                    titlePageElement.innerHTML = output.html.title_page;
+                    scriptElement.innerHTML = output.html.script;
+
+                    doc.addHTML(titlePageElement);
                     doc.addPage();
-                    doc.addHTML((0, _jquery2.default)("#script").get(0));
+                    doc.addHTML(scriptElement);
                     doc.save("test.pdf");
                 });
             }
