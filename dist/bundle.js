@@ -182,11 +182,8 @@ var pickerCallback = function pickerCallback(data) {
                     titlePageElement.innerHTML = output.html.title_page;
                     scriptElement.innerHTML = output.html.script;
 
-                    doc.addHTML(titlePageElement);
-                    doc.addPage().done(function (newDoc) {
-                        newDoc.addHTML(scriptElement);
-                        newDoc.save("test.pdf");
-                    });
+                    doc.fromHTML(scriptElement.value);
+                    doc.save("test.pdf");
                 });
             }
         });
