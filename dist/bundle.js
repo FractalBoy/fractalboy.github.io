@@ -140,12 +140,14 @@ var pickerCallback = function pickerCallback(data) {
                 Authorization: 'Bearer ' + oauthToken
             },
             success: function success(text) {
-                _fountain2.default.parse(text, function (html) {
+                _fountain2.default.parse(text, function (output) {
                     var doc = new _jspdf2.default({
                         format: "letter"
                     });
 
-                    doc.addHTML(html);
+                    doc.addHTML(output.html.title_page);
+                    doc.addPage();
+                    doc.addHTML(output.html.script);
                     doc.save("test.pdf");
                 });
             }
