@@ -10786,44 +10786,20 @@ var downloadPdf = function downloadPdf() {
         format: 'letter'
     });
 
-    var promises = [];
+    var pages = [];
 
     (0, _jquery2.default)("#script").children(".page").each(function (i, page) {
-        var deferred = _jquery2.default.Deferred();
-
-        (0, _html2canvas2.default)(page, {
-            onrendered: function onrendered(canvas) {
-                deferred.resolve(canvas);
-            }
-        });
-
-        promises.push(deferred.promise());
+        pages.push(page);
     });
 
-    _jquery2.default.when.apply(_jquery2.default, promises).done(function () {
-        for (var _len = arguments.length, results = Array(_len), _key = 0; _key < _len; _key++) {
-            results[_key] = arguments[_key];
+    for (var i = 0; i < pages.length; i++) {
+        pdf.addHTML(pages[i], 0, 0);
+        if (i !== pages.length - 1) {
+            pdf.addPage();
         }
+    }
 
-        for (var i = 0; i < results.length; i++) {
-            var canvas = results[i];
-            setPixelated(canvas.getContext('2d'));
-            var image = canvas.toDataURL();
-            pdf.addImage(image, "PNG", 0, 0);
-            if (i !== results.length - 1) {
-                pdf.addPage();
-            }
-        }
-        pdf.save("test.pdf");
-    });
-};
-
-var setPixelated = function setPixelated(context) {
-    context["imageSmoothingEnabled"] = false;
-    context["mozImageSmoothingEnabled"] = false;
-    context["oImageSmoothingEnabled"] = false;
-    context["webkitImageSmoothingEnabled"] = false;
-    context["msImageSmoothingEnabled"] = false;
+    pdf.save("test.pdf");
 };
 
 var updateSigninStatus = function updateSigninStatus(isSignedIn) {
