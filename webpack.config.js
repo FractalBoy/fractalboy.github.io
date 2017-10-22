@@ -17,10 +17,6 @@ module.exports = {
                         presets: ['env']
                     }
                 }
-            },
-            {
-                test: require.resolve('./src/jsPDF/libs/html2pdf.js'),
-                use: 'exports-loader?html2pdf'
             }
         ]
     }
