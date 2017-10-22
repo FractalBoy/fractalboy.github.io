@@ -10788,7 +10788,7 @@ var downloadPdf = function downloadPdf() {
 
     var promises = [];
 
-    (0, _jquery2.default)("#script").each(function (i, page) {
+    (0, _jquery2.default)("#script").children(".page").each(function (i, page) {
         var deferred = _jquery2.default.Deferred();
 
         (0, _html2canvas2.default)(page, {
