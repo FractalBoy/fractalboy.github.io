@@ -135,7 +135,7 @@ var pickerCallback = function pickerCallback(data) {
     if (data.action === google.picker.Action.PICKED) {
         var fileId = data.docs[0].id;
         _jquery2.default.get({
-            url: 'https://www.googleapis.com/drive/v2/files/' + fileId,
+            url: 'https://www.googleapis.com/drive/v2/files/' + fileId + '/export?mimeType=text/plain',
             headers: {
                 Authorization: 'Bearer ' + oauthToken
             },
