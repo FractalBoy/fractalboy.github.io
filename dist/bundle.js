@@ -10800,8 +10800,12 @@ var downloadPdf = function downloadPdf() {
         promises.push(deferred.promise());
     });
 
-    _jquery2.default.when.apply(_jquery2.default, promises).done(function (something) {
-        console.log(something);
+    _jquery2.default.when.apply(_jquery2.default, promises).done(function () {
+        for (var _len = arguments.length, results = Array(_len), _key = 0; _key < _len; _key++) {
+            results[_key] = arguments[_key];
+        }
+
+        console.log(results);
     });
 };
 
