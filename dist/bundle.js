@@ -15117,6 +15117,9 @@ function html2pdf(html, pdf, callback) {
 	}
 }
 
+/*** EXPORTS FROM exports-loader ***/
+module.exports = html2pdf;
+
 /***/ }),
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
