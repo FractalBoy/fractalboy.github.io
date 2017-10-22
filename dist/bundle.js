@@ -176,9 +176,11 @@ var pickerCallback = function pickerCallback(data) {
                         format: "letter"
                     });
 
-                    doc.addHTML(output.html.title_page);
+                    (0, _jquery2.default)("#title_page").html(output.html.title_page);
+                    (0, _jquery2.default)("#script").html(output.html.script);
+                    doc.addHTML((0, _jquery2.default)("#title_page").get(0));
                     doc.addPage();
-                    doc.addHTML(output.html.script);
+                    doc.addHTML((0, _jquery2.default)("#script").get(0));
                     doc.save("test.pdf");
                 });
             }
