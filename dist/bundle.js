@@ -10689,7 +10689,7 @@ var oauthToken = void 0;
 
 (0, _jquery2.default)(function () {
     (0, _jquery2.default)("#convert").click(loadPicker);
-    (0, _jquery2.default)("#save").click(saveToDrive);
+    (0, _jquery2.default)("#print").click(print);
 });
 
 var loadPicker = function loadPicker() {
@@ -10738,11 +10738,15 @@ var pickerCallback = function pickerCallback(data) {
                 var scriptElement = (0, _jquery2.default)("#script");
                 scriptElement.empty();
                 _fountainReader2.default.load(text, scriptElement, function () {
-                    (0, _jquery2.default)("#save").show();
+                    (0, _jquery2.default)("#print").show();
                 });
             }
         });
     }
+};
+
+var print = function print() {
+    (0, _jquery2.default)("#script")[0].print();
 };
 
 /***/ }),
