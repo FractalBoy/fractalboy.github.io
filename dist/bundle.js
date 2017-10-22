@@ -128,6 +128,8 @@ var signoutButton = document.getElementById("signout-button");
 var pickerApiLoaded = false;
 var oauthToken = void 0;
 
+(0, _jquery2.default)("#convert").click(loadPicker);
+
 var loadPicker = function loadPicker() {
     gapi.load('auth', { callback: onAuthApiLoad });
     gapi.load('picker', { callback: onPickerApiLoad });
