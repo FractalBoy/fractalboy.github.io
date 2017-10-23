@@ -10737,6 +10737,7 @@ var pickerCallback = function pickerCallback(data) {
                 var scriptElement = (0, _jquery2.default)("#script");
                 scriptElement.empty();
                 _fountainReader2.default.load(text, scriptElement);
+                (0, _jquery2.default)("#print").show();
             }
         });
     }
