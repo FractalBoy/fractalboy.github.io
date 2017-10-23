@@ -1,3 +1,5 @@
+.no-print { display: none; }
+
 #script .page
 {    
     background: #fff;
