@@ -10806,8 +10806,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
                 var maxSize = getDpi() * 11;
                 var currPage = createPage();
                 element.append(currPage);
-                script.each(function (i, child) {
-                    if (currPage.height() > maxSize) {
+                script.children().each(function (i, child) {
+                    if (currPage.height() >= maxSize) {
                         currPage = createPage();
                         element.append(currPage);
                     }
