@@ -26,6 +26,7 @@
 
 #script .page
 {    
+    page-break-before: always;
     background: #fff;
     color: #222;
     cursor: text;
