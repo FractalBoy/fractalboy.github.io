@@ -10689,6 +10689,9 @@ var oauthToken = void 0;
 
 (0, _jquery2.default)(function () {
     (0, _jquery2.default)("#convert").click(loadPicker);
+    (0, _jquery2.default)("#print").click(function () {
+        window.print();
+    });
 });
 
 var loadPicker = function loadPicker() {
