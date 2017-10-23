@@ -1,6 +1,6 @@
 .no-print { display: none; }
 
-#script { margin: 25px auto 0 auto; width: 850px; }
+#script { margin: 0 0 0 0; width: 850px; }
 
 #script h1 {
     font-weight: normal;
@@ -23,6 +23,7 @@
 }
 
 .page::-moz-selection, .page::selection { background: #ED303C; color: #fff; }
+
 #script .page
 {    
     background: #fff;
