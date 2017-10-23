@@ -2,6 +2,7 @@
 <html>
 	<head>
         <link rel="stylesheet" type="text/css" href="dist/style.css" />
+        <link rel="stylesheet" type="text/css" href="dist/print.css" media="print" />
         <script>
             function onLoadCallback() {
                 document.getElementById("convert").style.display = "";
@@ -9,8 +10,8 @@
         </script>
 	</head>
 	<body>
-        <button style="display: none;" id="convert">Convert</button>
-        <button style="display: none;" id="print">Print</button>
+        <button class="no-print" style="display: none;" id="convert">Convert</button>
+        <button class="no-print" style="display: none;" id="print">Print</button>
         <div id="script" class="us-letter dpi100"></div>
         <script src="dist/bundle.js"></script>
         <script src="https://apis.google.com/js/api.js?onload=onLoadCallback"></script>
