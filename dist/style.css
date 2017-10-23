@@ -125,10 +125,10 @@ body { background: gray; }
 #script .page h3:before { color: #bbb; content: attr(id); font-weight: bold; left: -45px; position: absolute; }
 #script .page h3:after { color: #bbb; content: attr(id); font-weight: bold; right: -45px; position: absolute; }
 
-#script .page div.dialogue { margin-left: auto; margin-right: auto; width: 57%; }
-#script .page div.dialogue h4 { margin-bottom: 0; margin-left: 23%; }
+#script .page div.dialogue { margin-left: auto; margin-right: auto; width: 57%;  text-align: center; }
+#script .page div.dialogue h4 { margin-bottom: 0; }
 #script .page div.dialogue p.parenthetical { margin-bottom: 0; margin-top: 0; margin-left: 11%;}
-#script .page div.dialogue p { margin-bottom: 0; margin-top: 0; }
+#script .page div.dialogue p { margin-bottom: 0; margin-top: 0; text-align: left; }
 
 #script .page div.dual-dialogue { margin: 2em 0 0.9em 2%; auto; width: 95%; }
 #script .page div.dual-dialogue div.dialogue { display: inline-block; margin: 0; width: 45%; }
