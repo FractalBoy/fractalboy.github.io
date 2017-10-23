@@ -10762,16 +10762,34 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 ;(function () {
     var fountainReader = function fountainReader() {};
 
+    var getDpi = function getDpi() {
+        if (getDpi.cache === null) {
+            var d = (0, _jquery2.default)("<div/>").css({ position: "absolute", top: "-1in", left: "-1in", height: "1in", width: "1in" }).appendTo("body");
+            var dpi = d.height();
+            d.remove();
+            return dpi;
+        }
+
+        return getDpi.cache;
+    };
+
+    getDpi.cache = null;
+
+    var createPage = function createPage() {
+        var newPage = (0, _jquery2.default)(document.createElement('div')).addClass('page');
+        return newPage;
+    };
+
     var page = function page(html, isTitlePage) {
-        var $output = (0, _jquery2.default)(document.createElement('div')).addClass('page').html(html);
+        var $output = createPage().html(html);
 
         if (isTitlePage) {
             $output.addClass('title-page');
         } else {
-            $output.children('div.dialogue.dual').each(function () {
-                dual = (0, _jquery2.default)(this).prev('div.dialogue');
-                (0, _jquery2.default)(this).wrap((0, _jquery2.default)(document.createElement('div')).addClass('dual-dialogue'));
-                dual.prependTo((0, _jquery2.default)(this).parent());
+            $output.children('div.dialogue.dual').each(function (i, child) {
+                dual = child.prev('div.dialogue');
+                child.wrap((0, _jquery2.default)(document.createElement('div')).addClass('dual-dialogue'));
+                dual.prependTo(child.parent());
             });
         }
 
@@ -10781,10 +10799,21 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
     var load = function load(file, element, callback) {
         _fountain2.default.parse(file, function (result) {
             if (result) {
-                if (result.title && result.html.title_page) {
+                if (result.html.title_page) {
                     element.append(page(result.html.title_page, true));
                 }
-                element.append(page(result.html.script));
+                var script = page(result.html.script);
+                var maxSize = getDpi() * 11;
+                var currPage = createPage();
+                element.append(currPage);
+                script.each(function (i, child) {
+                    if (currPage.height() > maxSize) {
+                        currPage = createPage();
+                        element.append(currPage);
+                    }
+                    currPage.append(child);
+                });
+
                 if (typeof callback === "function") {
                     callback();
                 }
