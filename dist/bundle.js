@@ -10689,7 +10689,6 @@ var oauthToken = void 0;
 
 (0, _jquery2.default)(function () {
     (0, _jquery2.default)("#convert").click(loadPicker);
-    (0, _jquery2.default)("#print").click(print);
 });
 
 var loadPicker = function loadPicker() {
@@ -10737,16 +10736,10 @@ var pickerCallback = function pickerCallback(data) {
             success: function success(text) {
                 var scriptElement = (0, _jquery2.default)("#script");
                 scriptElement.empty();
-                _fountainReader2.default.load(text, scriptElement, function () {
-                    (0, _jquery2.default)("#print").show();
-                });
+                _fountainReader2.default.load(text, scriptElement);
             }
         });
     }
-};
-
-var print = function print() {
-    (0, _jquery2.default)("#script")[0].print();
 };
 
 /***/ }),
@@ -10792,7 +10785,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
                     element.append(page(result.html.title_page, true));
                 }
                 element.append(page(result.html.script));
-                callback();
+                if (typeof callback === "function") {
+                    callback();
+                }
             }
         });
     };
