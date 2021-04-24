@@ -1,0 +1,21 @@
+{
+  "name": "rustendo",
+  "collaborators": [
+    "Marc Reisner <reisner.marc@gmail.com>"
+  ],
+  "description": "A NES emulator written in Rust",
+  "version": "0.1.0",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FractalBoy/rustendo"
+  },
+  "files": [
+    "rustendo_bg.wasm",
+    "rustendo.js",
+    "rustendo.d.ts"
+  ],
+  "module": "rustendo.js",
+  "types": "rustendo.d.ts",
+  "sideEffects": false
+}
