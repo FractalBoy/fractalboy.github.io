@@ -55,23 +55,23 @@
 /******/ 		"../pkg/rustendo_bg.wasm": function() {
 /******/ 			return {
 /******/ 				"./rustendo_bg.js": {
-/******/ 					"__wbindgen_cb_forget": function(p0i32) {
-/******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbindgen_cb_forget"](p0i32);
-/******/ 					},
 /******/ 					"__wbindgen_cb_drop": function(p0i32) {
 /******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbindgen_cb_drop"](p0i32);
 /******/ 					},
 /******/ 					"__wbindgen_object_drop_ref": function(p0i32) {
 /******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbindgen_object_drop_ref"](p0i32);
 /******/ 					},
-/******/ 					"__wbg_error_4bb6c2a97407129a": function(p0i32,p1i32) {
-/******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbg_error_4bb6c2a97407129a"](p0i32,p1i32);
+/******/ 					"__wbindgen_cb_forget": function(p0i32) {
+/******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbindgen_cb_forget"](p0i32);
 /******/ 					},
 /******/ 					"__wbg_new_59cb74e423758ede": function() {
 /******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbg_new_59cb74e423758ede"]();
 /******/ 					},
 /******/ 					"__wbg_stack_558ba5917b466edd": function(p0i32,p1i32) {
 /******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbg_stack_558ba5917b466edd"](p0i32,p1i32);
+/******/ 					},
+/******/ 					"__wbg_error_4bb6c2a97407129a": function(p0i32,p1i32) {
+/******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbg_error_4bb6c2a97407129a"](p0i32,p1i32);
 /******/ 					},
 /******/ 					"__wbg_instanceof_Window_d64060d13377409b": function(p0i32) {
 /******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbg_instanceof_Window_d64060d13377409b"](p0i32);
@@ -133,14 +133,14 @@
 /******/ 					"__wbg_getContext_554fc171434d411b": function(p0i32,p1i32,p2i32) {
 /******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbg_getContext_554fc171434d411b"](p0i32,p1i32,p2i32);
 /******/ 					},
-/******/ 					"__wbg_newnoargs_bfddd41728ab0b9c": function(p0i32,p1i32) {
-/******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbg_newnoargs_bfddd41728ab0b9c"](p0i32,p1i32);
-/******/ 					},
 /******/ 					"__wbg_call_20c04382b27a4486": function(p0i32,p1i32) {
 /******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbg_call_20c04382b27a4486"](p0i32,p1i32);
 /******/ 					},
-/******/ 					"__wbg_globalThis_8379563d70fab135": function() {
-/******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbg_globalThis_8379563d70fab135"]();
+/******/ 					"__wbindgen_object_clone_ref": function(p0i32) {
+/******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbindgen_object_clone_ref"](p0i32);
+/******/ 					},
+/******/ 					"__wbg_newnoargs_bfddd41728ab0b9c": function(p0i32,p1i32) {
+/******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbg_newnoargs_bfddd41728ab0b9c"](p0i32,p1i32);
 /******/ 					},
 /******/ 					"__wbg_self_944d201f31e01c91": function() {
 /******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbg_self_944d201f31e01c91"]();
@@ -148,26 +148,26 @@
 /******/ 					"__wbg_window_993fd51731b86960": function() {
 /******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbg_window_993fd51731b86960"]();
 /******/ 					},
+/******/ 					"__wbg_globalThis_8379563d70fab135": function() {
+/******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbg_globalThis_8379563d70fab135"]();
+/******/ 					},
 /******/ 					"__wbg_global_073eb4249a3a8c12": function() {
 /******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbg_global_073eb4249a3a8c12"]();
-/******/ 					},
-/******/ 					"__wbg_new_b7e3d6adc8b9377a": function(p0i32) {
-/******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbg_new_b7e3d6adc8b9377a"](p0i32);
-/******/ 					},
-/******/ 					"__wbg_length_32e166b42b85060a": function(p0i32) {
-/******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbg_length_32e166b42b85060a"](p0i32);
-/******/ 					},
-/******/ 					"__wbg_set_66e888cef8f00a73": function(p0i32,p1i32,p2i32) {
-/******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbg_set_66e888cef8f00a73"](p0i32,p1i32,p2i32);
-/******/ 					},
-/******/ 					"__wbg_buffer_985803c87989344b": function(p0i32) {
-/******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbg_buffer_985803c87989344b"](p0i32);
 /******/ 					},
 /******/ 					"__wbindgen_is_undefined": function(p0i32) {
 /******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbindgen_is_undefined"](p0i32);
 /******/ 					},
-/******/ 					"__wbindgen_object_clone_ref": function(p0i32) {
-/******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbindgen_object_clone_ref"](p0i32);
+/******/ 					"__wbg_buffer_985803c87989344b": function(p0i32) {
+/******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbg_buffer_985803c87989344b"](p0i32);
+/******/ 					},
+/******/ 					"__wbg_length_32e166b42b85060a": function(p0i32) {
+/******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbg_length_32e166b42b85060a"](p0i32);
+/******/ 					},
+/******/ 					"__wbg_new_b7e3d6adc8b9377a": function(p0i32) {
+/******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbg_new_b7e3d6adc8b9377a"](p0i32);
+/******/ 					},
+/******/ 					"__wbg_set_66e888cef8f00a73": function(p0i32,p1i32,p2i32) {
+/******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbg_set_66e888cef8f00a73"](p0i32,p1i32,p2i32);
 /******/ 					},
 /******/ 					"__wbindgen_debug_string": function(p0i32,p1i32) {
 /******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbindgen_debug_string"](p0i32,p1i32);
@@ -178,11 +178,11 @@
 /******/ 					"__wbindgen_memory": function() {
 /******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbindgen_memory"]();
 /******/ 					},
-/******/ 					"__wbindgen_closure_wrapper156": function(p0i32,p1i32,p2i32) {
-/******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbindgen_closure_wrapper156"](p0i32,p1i32,p2i32);
+/******/ 					"__wbindgen_closure_wrapper64": function(p0i32,p1i32,p2i32) {
+/******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbindgen_closure_wrapper64"](p0i32,p1i32,p2i32);
 /******/ 					},
-/******/ 					"__wbindgen_closure_wrapper158": function(p0i32,p1i32,p2i32) {
-/******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbindgen_closure_wrapper158"](p0i32,p1i32,p2i32);
+/******/ 					"__wbindgen_closure_wrapper66": function(p0i32,p1i32,p2i32) {
+/******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbindgen_closure_wrapper66"](p0i32,p1i32,p2i32);
 /******/ 					}
 /******/ 				}
 /******/ 			};
@@ -285,7 +285,7 @@
 /******/ 				promises.push(installedWasmModuleData);
 /******/ 			else {
 /******/ 				var importObject = wasmImportObjects[wasmModuleId]();
-/******/ 				var req = fetch(__webpack_require__.p + "" + {"../pkg/rustendo_bg.wasm":"4e9ba08e289edd0e15de"}[wasmModuleId] + ".module.wasm");
+/******/ 				var req = fetch(__webpack_require__.p + "" + {"../pkg/rustendo_bg.wasm":"7841323c3f2d5c56c833"}[wasmModuleId] + ".module.wasm");
 /******/ 				var promise;
 /******/ 				if(importObject instanceof Promise && typeof WebAssembly.compileStreaming === 'function') {
 /******/ 					promise = Promise.all([WebAssembly.compileStreaming(req), importObject]).then(function(items) {
