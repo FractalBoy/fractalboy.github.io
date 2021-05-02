@@ -178,11 +178,11 @@
 /******/ 					"__wbindgen_memory": function() {
 /******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbindgen_memory"]();
 /******/ 					},
-/******/ 					"__wbindgen_closure_wrapper64": function(p0i32,p1i32,p2i32) {
-/******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbindgen_closure_wrapper64"](p0i32,p1i32,p2i32);
-/******/ 					},
 /******/ 					"__wbindgen_closure_wrapper66": function(p0i32,p1i32,p2i32) {
 /******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbindgen_closure_wrapper66"](p0i32,p1i32,p2i32);
+/******/ 					},
+/******/ 					"__wbindgen_closure_wrapper64": function(p0i32,p1i32,p2i32) {
+/******/ 						return installedModules["../pkg/rustendo_bg.js"].exports["__wbindgen_closure_wrapper64"](p0i32,p1i32,p2i32);
 /******/ 					}
 /******/ 				}
 /******/ 			};
@@ -285,7 +285,7 @@
 /******/ 				promises.push(installedWasmModuleData);
 /******/ 			else {
 /******/ 				var importObject = wasmImportObjects[wasmModuleId]();
-/******/ 				var req = fetch(__webpack_require__.p + "" + {"../pkg/rustendo_bg.wasm":"7841323c3f2d5c56c833"}[wasmModuleId] + ".module.wasm");
+/******/ 				var req = fetch(__webpack_require__.p + "" + {"../pkg/rustendo_bg.wasm":"f4bcac8f80cd24498737"}[wasmModuleId] + ".module.wasm");
 /******/ 				var promise;
 /******/ 				if(importObject instanceof Promise && typeof WebAssembly.compileStreaming === 'function') {
 /******/ 					promise = Promise.all([WebAssembly.compileStreaming(req), importObject]).then(function(items) {
